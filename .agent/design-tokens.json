@@ -1,0 +1,44 @@
+{
+  "$description": "Seed design tokens for this project (W3C Design Tokens Community Group format). Edit these to restyle both the app and the /__preview specimen kit — every colour, font, and spacing value below feeds the `--ps-*` CSS custom properties via `scripts/gen-tokens-css.mjs`. See .agent/design-tokens-format.md for the format and the component-convention mapping.",
+  "color": {
+    "$type": "color",
+    "base": {
+      "neutral": {
+        "0": { "$value": "#ffffff" },
+        "50": { "$value": "#f8fafc" },
+        "200": { "$value": "#e2e8f0" },
+        "500": { "$value": "#64748b" },
+        "900": { "$value": "#0f172a" }
+      },
+      "blue": {
+        "500": { "$value": "#2563eb" }
+      }
+    },
+    "brand": {
+      "primary": { "$value": "{color.base.blue.500}" },
+      "onPrimary": { "$value": "{color.base.neutral.0}" }
+    }
+  },
+  "typography": {
+    "family": {
+      "body": { "$type": "fontFamily", "$value": "Inter" },
+      "heading": { "$type": "fontFamily", "$value": "Inter" }
+    },
+    "size": {
+      "$type": "dimension",
+      "body": { "$value": "16px" },
+      "heading": { "$value": "28px" }
+    },
+    "weight": {
+      "$type": "fontWeight",
+      "regular": { "$value": 400 },
+      "bold": { "$value": 700 }
+    }
+  },
+  "spacing": {
+    "$type": "dimension",
+    "sm": { "$value": "8px" },
+    "md": { "$value": "16px" },
+    "lg": { "$value": "32px" }
+  }
+}

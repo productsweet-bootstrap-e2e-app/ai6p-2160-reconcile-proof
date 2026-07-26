@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "system": {
+    "id": "ai6p-280-sacrificial",
+    "name": "AI6P-280 Sacrificial Hello World",
+    "summary": "A web application front end: a React+Vite SPA hosted on AWS Amplify, wired to an AppSync GraphQL API and a Cognito user pool that already exist and are owned OUTSIDE this project. This project provisions no backend infrastructure — its only coupling to the backend is a declared runtime-config contract read from SSM at build time. Bootstrapped from the Product Sweet webapp template (external-backend mode) around one Note vertical slice; replace that slice with the migrated surface and refine this summary as the project takes shape.",
+    "technology": "react-vite, AWS Amplify Hosting, GitHub Actions, AWS SSM Parameter Store (runtime config)",
+    "relationships": [
+      {
+        "targetId": "github",
+        "label": "stores source; PR + push events trigger the deploy workflows",
+        "direction": "bidirectional"
+      },
+      {
+        "targetId": "github-actions",
+        "label": "runs pr-gate on PRs; builds and deploys the SPA on push to main",
+        "direction": "incoming"
+      },
+      {
+        "targetId": "aws-amplify-hosting",
+        "label": "serves the built SPA",
+        "direction": "outgoing"
+      },
+      {
+        "targetId": "external-backend",
+        "label": "reads and writes application data through the pre-existing GraphQL API",
+        "direction": "outgoing"
+      },
+      {
+        "targetId": "app-user",
+        "label": "authenticated users read and write their data through the app",
+        "direction": "bidirectional"
+      }
+    ]
+  },
+  "externalSystems": [
+    {
+      "id": "github",
+      "name": "GitHub",
+      "summary": "Source repository hosting at https://github.com/productsweet-bootstrap-e2e-app/ai6p-2160-reconcile-proof. Stores the SPA source, the `.kanban/` task tree, the `.agent/` knowledge folder, and the GitHub Actions workflows committed by the bootstrap. No backend source lives here — the backend is owned elsewhere.",
+      "kind": "external",
+      "group": "Source & CI"
+    },
+    {
+      "id": "github-actions",
+      "name": "GitHub Actions",
+      "summary": "CI/CD runner federated into AWS via OIDC. Runs the always-on `pr-gate` required check on every PR and the frontend deploy workflow on push to main. There is deliberately NO backend deploy workflow. The frontend build reads this project's declared runtime-config parameters from SSM (`scripts/gen-aws-config.mjs`) and FAILS the build if any is unreadable. Higher environments are promoted by `promote-<env>.yml` workflows dispatched by the Product Sweet webapp with the reviewed commit pinned.",
+      "kind": "external",
+      "group": "Source & CI"
+    },
+    {
+      "id": "aws-amplify-hosting",
+      "name": "AWS Amplify Hosting",
+      "summary": "Hosts the built SPA on the Amplify CDN with an SPA rewrite rule so deep links fall through to `index.html`. Auto-build on main is disabled; the deploy workflow is the only release path.",
+      "kind": "external",
+      "group": "Hosting"
+    },
+    {
+      "id": "runtime-config",
+      "name": "SSM Runtime Config",
+      "summary": "AWS Systems Manager Parameter Store parameters under `/productsweet-external-smoke/webapp` holding the external backend's endpoint and Cognito ids. Seeded by the backend's owner / an operator — this project only READS them, at build time, once per deploy. The same paths in different environment accounts hold that environment's values; the deploy role's credentials decide which it reads.",
+      "kind": "external",
+      "group": "Configuration"
+    },
+    {
+      "id": "external-backend",
+      "name": "Existing GraphQL Backend",
+      "summary": "The pre-existing AppSync GraphQL API (with its resolvers and data store) that this SPA consumes. Provisioned, deployed, versioned, and operated OUTSIDE this project's boundary. Its schema is a contract this project consumes and cannot change unilaterally.",
+      "kind": "external",
+      "group": "Backend (external)"
+    },
+    {
+      "id": "cognito",
+      "name": "Existing Cognito User Pool",
+      "summary": "The pre-existing Cognito user pool the SPA authenticates against and the external API authorizes on. Sign-up policy, MFA, custom claims, and the app-client configuration belong to the backend's owner, not this project.",
+      "kind": "external",
+      "group": "Backend (external)"
+    },
+    {
+      "id": "app-user",
+      "name": "App User",
+      "summary": "An authenticated end user of the web app. Signs in through the existing Cognito user pool and reads / writes Notes through the SPA.",
+      "kind": "person",
+      "group": "People"
+    }
+  ],
+  "containers": [
+    {
+      "id": "spa",
+      "name": "Single-Page App",
+      "summary": "The react-vite SPA served from AWS Amplify Hosting — the ONLY container this project owns. Renders the Note vertical slice as a starting scaffold (sign in, create a note, list Notes) against the existing GraphQL API via the aws-amplify client; a migration replaces that scaffold with the real surface.",
+      "technology": "React 19 + Vite 6 SPA — single-page app rendered client-side; build emits static `index.html` + JS bundle + assets; aws-amplify client for AppSync GraphQL + Cognito auth",
+      "responsibilities": [
+        "Authenticate users against the existing Cognito user pool",
+        "Call the existing GraphQL API with the user-pool auth token",
+        "Read its endpoint + Cognito ids from build-time-generated config (never hardcoded)",
+        "Serve from AWS Amplify Hosting at https://pending-first-deploy.example/",
+        "Render the entire app client-side — every route is served from the same `index.html`; configure the Amplify rewrite rule so deep links fall through to the SPA"
+      ],
+      "relationships": [
+        {
+          "targetId": "app-user",
+          "label": "served to the user's browser",
+          "direction": "outgoing"
+        },
+        {
+          "targetId": "aws-amplify-hosting",
+          "label": "deployed to and served from",
+          "direction": "incoming"
+        },
+        {
+          "targetId": "cognito",
+          "label": "authenticates users against",
+          "direction": "outgoing"
+        },
+        {
+          "targetId": "external-backend",
+          "label": "queries + mutates data via GraphQL",
+          "direction": "outgoing"
+        },
+        {
+          "targetId": "runtime-config",
+          "label": "endpoint + pool ids baked in at build time from",
+          "direction": "incoming"
+        }
+      ],
+      "group": "Frontend"
+    }
+  ],
+  "components": []
+}

@@ -1,0 +1,109 @@
+/*
+ * App baseline — a minimal, token-driven starting point (NOT a finished theme).
+ *
+ * Every value here reads a `--ps-*` custom property from `src/tokens.css`
+ * (generated from `.agent/design-tokens.json`), so the app and the /__preview
+ * specimen kit share ONE token contract: edit the token file to restyle both.
+ * Keep this legible and minimal — richer styling is a later design direction.
+ */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--ps-font-body);
+  font-size: var(--ps-size-body);
+  font-weight: var(--ps-weight-regular);
+  color: var(--ps-color-ink);
+  background: var(--ps-color-surface);
+  line-height: 1.5;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--ps-font-heading);
+  font-weight: var(--ps-weight-bold);
+  color: var(--ps-color-ink);
+}
+
+.ps-app {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--ps-space-lg) var(--ps-space-md);
+}
+
+.ps-app h1 {
+  font-size: var(--ps-size-heading);
+  margin: 0 0 var(--ps-space-lg);
+}
+
+/* Auth form + entity UI share one card + field + button vocabulary. */
+.ps-auth,
+.ps-entities {
+  background: var(--ps-color-surface-muted);
+  border: 1px solid var(--ps-color-border);
+  border-radius: 8px;
+  padding: var(--ps-space-md);
+  margin-bottom: var(--ps-space-lg);
+}
+
+.ps-auth label,
+.ps-entities label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: var(--ps-space-md);
+  font-weight: var(--ps-weight-bold);
+}
+
+.ps-auth input,
+.ps-entities input {
+  font: inherit;
+  padding: var(--ps-space-sm);
+  border: 1px solid var(--ps-color-border);
+  border-radius: 6px;
+  background: var(--ps-color-surface);
+  color: var(--ps-color-ink);
+}
+
+.ps-btn {
+  font: inherit;
+  font-weight: var(--ps-weight-bold);
+  padding: var(--ps-space-sm) var(--ps-space-md);
+  border-radius: 6px;
+  border: 1px solid var(--ps-color-primary);
+  background: var(--ps-color-primary);
+  color: var(--ps-color-on-primary);
+  cursor: pointer;
+}
+
+.ps-btn-link {
+  background: transparent;
+  color: var(--ps-color-primary);
+  border: none;
+  padding: var(--ps-space-sm) 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.ps-list {
+  list-style: none;
+  margin: var(--ps-space-md) 0 0;
+  padding: 0;
+}
+
+.ps-list li {
+  padding: var(--ps-space-sm) 0;
+  border-top: 1px solid var(--ps-color-border);
+}
+
+.ps-list li small {
+  color: var(--ps-color-ink-muted);
+}
+
+[role='alert'] {
+  color: var(--ps-color-primary);
+}
